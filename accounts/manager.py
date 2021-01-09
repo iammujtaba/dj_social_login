@@ -19,9 +19,9 @@ class AccountsManager(BaseUserManager):
         if not email:
             raise ValidationError(_("Email id is required for registration as a staff."))
 
-        other_fields.setdefaults('is_staff',True)
-        other_fields.setdefaults('is_superuser',True)
-        other_fields.setdefaults('is_active',True)
+        other_fields.setdefault('is_staff',True)
+        other_fields.setdefault('is_superuser',True)
+        other_fields.setdefault('is_active',True)
         if not other_fields.get('is_staff'):
             raise ValidationError(_('Please mark this user as a staff.'))
         if not other_fields.get('is_superuser'):
