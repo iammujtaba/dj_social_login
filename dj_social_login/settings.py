@@ -29,8 +29,15 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
-INSTALLED_APPS = [
+DJANGO_USER_APPS = ['accounts']
+DJANGO_EXTERNAL_APPS = [
+    'rest_framework',
+    'oauth2_provider',
+    'social_django',
+    'drf_social_oauth2',
+    'corsheaders',
+]
+DJANGO_PRE_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+INSTALLED_APPS = DJANGO_PRE_APPS + DJANGO_USER_APPS + DJANGO_EXTERNAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -47,6 +56,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # External middleware for social login
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'dj_social_login.urls'
@@ -62,6 +74,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -118,3 +132,23 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+AUTH_USER_MODEL='accounts.Account'
+
+
+AUTHENTICATION_BACKENDS = (  
+  'drf_social_oauth2.backends.DjangoOAuth2',
+  'django.contrib.auth.backends.ModelBackend',
+)
+
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+       'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  
+       'drf_social_oauth2.authentication.SocialAuthentication',
+   )
+}
+
+CORS_ALLOWED_ORIGINS = [
+   "http://localhost:3000",
+   "http://127.0.0.1:3000"
+]
